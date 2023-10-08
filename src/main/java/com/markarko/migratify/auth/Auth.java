@@ -22,6 +22,39 @@ public class Auth {
         this.env = env;
     }
 
+    public ResponseEntity<AccessTokenResponse> buildAccessTokenResponse(String code) {
+        String authUrl = "https://accounts.spotify.com/api/token";
+
+        HttpHeaders headers = buildAccessTokenHeaders();
+        MultiValueMap<String, String> form = buildAccessTokenFormData(code);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(form, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.exchange(authUrl, HttpMethod.POST, requestEntity, AccessTokenResponse.class);
+    }
+    public HttpHeaders buildAccessTokenHeaders() {
+        String clientId = env.getProperty("client_id");
+        String clientSecret = env.getProperty("client_secret");
+        String authorization = Base64.getEncoder().encodeToString((clientId + ":" + clientSecret).getBytes());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Basic " + authorization);
+
+        return headers;
+    }
+
+    public MultiValueMap<String, String> buildAccessTokenFormData(String code) {
+        String redirectUri = env.getProperty("redirect_uri");;
+
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("code", code);
+        form.add("redirect_uri", redirectUri);
+        form.add("grant_type", "authorization_code");
+
+        return form;
+    }
+
     public HttpHeaders buildLoginHeaders() {
         String url = buildLoginUrl();
 

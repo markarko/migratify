@@ -20,4 +20,20 @@ public class AuthController {
     public ResponseEntity<String> login() {
         return new ResponseEntity<>(auth.buildLoginHeaders(), HttpStatus.FOUND);
     }
+    @GetMapping("/")
+    public ResponseEntity accessToken(@RequestParam("code") String code, @RequestParam("state") String state) {
+        if (state == null) {
+            return new ResponseEntity<>("Authentication failed. State mismatch.", HttpStatus.BAD_REQUEST);
+        }
+
+        ResponseEntity<AccessTokenResponse> response = auth.buildAccessTokenResponse(code);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return new ResponseEntity<>("Authentication failed. Please try again.", response.getStatusCode());
+        }
+
+        // auth successful
+        AccessTokenResponse accessTokenResponse = response.getBody();
+        return new ResponseEntity<>("Access token: " + accessTokenResponse.getAccessToken(), HttpStatus.OK);
+    }
 }
