@@ -2,6 +2,7 @@ package com.markarko.migratify.services;
 
 import com.markarko.migratify.entities.Track;
 import com.markarko.migratify.entities.Tracks;
+import com.markarko.migratify.entities.TracksWrapper;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -14,12 +15,27 @@ import java.util.Map;
 @Service
 public class TrackService {
 
-    public List<Track> getTracks(String accessToken, String url) {
+    public List<Track> getLikedSongs(String accessToken) {
+        String url = "https://api.spotify.com/v1/me/tracks";
+
         HttpHeaders headers = buildHeaders(accessToken);
 
         HttpEntity request = new HttpEntity(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<Tracks> response = restTemplate.exchange(url, HttpMethod.GET, request, Tracks.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody().getTracks();
+        }
+
+        return new ArrayList<>();
+    }
+    public List<Track> getTracks(String accessToken, String url) {
+        HttpHeaders headers = buildHeaders(accessToken);
+
+        HttpEntity request = new HttpEntity(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<TracksWrapper> response = restTemplate.exchange(url, HttpMethod.GET, request, TracksWrapper.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody().getTracks();
