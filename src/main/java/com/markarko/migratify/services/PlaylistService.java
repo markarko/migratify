@@ -41,7 +41,7 @@ public class PlaylistService {
         return new ArrayList<>();
     }
 
-    public ResponseEntity<String> postPlaylist(String accessToken, String playlistName) throws HttpClientErrorException {
+    public String postPlaylist(String accessToken, String playlistName) throws HttpClientErrorException {
         String userId = env.getProperty("user_id");
         String url = String.format("https://api.spotify.com/v1/users/%s/playlists", userId);
 
@@ -58,7 +58,7 @@ public class PlaylistService {
         HttpEntity<Map<String, String>> request = new HttpEntity<>(data, headers);
         RestTemplate restTemplate = new RestTemplate();
 
-        return restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+        return restTemplate.exchange(url, HttpMethod.POST, request, Playlist.class).getBody().getId();
     }
 
     private HttpHeaders buildHeaders(String accessToken) {
