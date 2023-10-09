@@ -1,11 +1,12 @@
-package com.markarko.migratify.auth;
+package com.markarko.migratify.services;
 
+import com.markarko.migratify.auth.AccessTokenResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -14,11 +15,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Base64;
 import java.util.Random;
 
-@Component
-public class Auth {
+@Service
+public class AuthService {
     private final Environment env;
 
-    public Auth(Environment env) {
+    public AuthService(Environment env) {
         this.env = env;
     }
 
