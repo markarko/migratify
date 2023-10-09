@@ -67,7 +67,7 @@ public class AuthService {
     }
     private String buildLoginUrl() {
         String state = generateRandomString(16);
-        String scope = "user-read-private user-read-email";
+        String scope = "playlist-modify-public playlist-modify-private playlist-read-private playlist-read-collaborative";
         String authUrl = "https://accounts.spotify.com/authorize?";
         String redirectUri = env.getProperty("redirect_uri");;
         String clientId = env.getProperty("client_id");;
